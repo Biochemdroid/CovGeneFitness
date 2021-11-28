@@ -7,4 +7,5 @@ The SARS_CoV_2-Fitness suite allows a more rapid interface for truncating any ge
 
 References: 
 https://www.biorxiv.org/content/10.1101/2021.04.11.439322v1
+
 https://github.com/3BioCompBio/SpikeProSARS-CoV-2
