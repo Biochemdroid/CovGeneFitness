@@ -1,7 +1,13 @@
 import PySimpleGUI as sg
+from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio.Align import MultipleSeqAlignment
+import Bio.Seq     
+from collections import Counter
+import re
 
-
-sg.theme('DarkYellow')   # Add a touch of color
+sg.theme('DarkGray13')   # Add a touch of color
 # All the stuff inside your window.
 layout = [  [sg.Text('SARS_CoV_2-Fitness')],
             [sg.Text('Enter accession number of COVID sequence'), sg.InputText()],
@@ -9,14 +15,16 @@ layout = [  [sg.Text('SARS_CoV_2-Fitness')],
             [sg.Button('Click to truncate sequnce to the spike protein and translate!'), sg.Button('Cancel')] ]
 
 # Create the Window
-window = sg.Window('Window Title', layout)
+window = sg.Window('Window Title', layout,size=(700, 150))
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
     event, values = window.read()
     if event == sg.WIN_CLOSED or event == 'Cancel': # if user closes window or clicks cancel
         break
-    print('You entered ', values[0])
-    print('You entered ', values[1])
+    name_of_file = "{file}.fasta".format(file = values[0])
+    
+#     print('You entered ', values[0])
+#     print('You entered ', values[1])
 #     sg.Popup(event, values, line_width=200)
     
 #Cuts SARS-CoV-2 genome down to nt 21563:25384 (around spike protein and some flanking nucleotides)
@@ -43,6 +51,7 @@ while True:
 
     # print(seq_dict.values())
     #This function truncates each of the 200 sequences and saves the output as new_fasta_file2
+    
     def excision(fasta_seq):
 
         n = -1
@@ -50,6 +59,7 @@ while True:
         for i in range(len(fasta_seq.values())):
 
             n = n + 1
+            
     #For semi-whole genome:
     #         fasta_line = list(fasta_seq.values())[n][14463:28484]
     #For spike:
@@ -76,10 +86,7 @@ while True:
 
 #Aligns the truncated sequencs:
     #-------------------------
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord
-    from Bio.Align import MultipleSeqAlignment
-
+  
     seqs = []
     with open('new_fasta_file_var.fasta','r') as reads:
         for line in reads:
@@ -109,8 +116,7 @@ while True:
     #------------------------
     
     final_translated_seqs = {}
-    import Bio.Seq     
-    from collections import Counter
+  
 
     fasta=SeqIO.parse("aligned_omi.fasta","fasta")
     seq_dict={}
@@ -160,7 +166,7 @@ while True:
 
             #The lower the number the more conserved.
             v1.subtract(ref)
-    #         print(v1)
+
             diff = (list(v1.values()))
             diff = [abs(i) for i in diff]
 
@@ -169,7 +175,6 @@ while True:
         min_value = min(index)
         min_index = index.index(min_value)
         best = list(_possible.keys())[min_index]
-    #     print(min_index)
         best_translated_seq = _possible[best]
         return best_translated_seq
 
@@ -190,16 +195,22 @@ while True:
     with open('ori_final_translated_seqs.fasta', 'r') as tran:
         for line in tran:
             translated_seq.append(line)
+    
+    with open('{}'.format(name_of_file), 'w') as output_file:
+        for line in translated_seq[5][2:-2]:
+            output_file.write(line)
             
     sg.popup_scrolled("""Copy and paste the translated sequence below into a file and load that file into SpikePro. 
-    In order to install SpikPro, use a terminal with c++ compiler compatibility (i.e., Ubuntu) and enter the following to install SpikePro:
+    In order to install SpikePro, use a terminal with c++ compiler compatibility (i.e., Ubuntu) and enter the following to install SpikePro:
     
+    For first time users:
     c++ SpikePro.cpp edlib/src/edlib.cpp CSVparser.cpp -o SpikePro -I edlib/include/ -std=c++11    
     
-    Then run the following with TEST replaced with whatever file you saved the translated sequence to: 
     
-    ./SpikePro TEST.fasta go
+    Run the following code: 
     
-    {translated}""".format(translated = translated_seq[5][1:]))
+    ./SpikePro {file} go
+    
+    {translated}""".format(translated = translated_seq[5][2:-2], file =name_of_file),size = (150,30))
 
 window.close()
