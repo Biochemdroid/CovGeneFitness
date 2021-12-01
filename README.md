@@ -1,4 +1,4 @@
-## SARS_CoV_2-Fitness:
+## SARS-CoV-2 Fitness Program:
 
 A GUI interface that allows user to input any entire SARS-CoV-2 genome into it. It cleans up the genome by truncating it to the spike protein and flanking nucleotides, aligning the nucleotides against the SARS-CoV-2 refernce strain (NC_045512.2), and translating into an amino acid sequence. Will then output your amino acid sequence out as a fasta file along with giving brief instructions on how to use the SpikeProSARS-CoV-2 program. 
 All rights and credit for the SpikeProSARS-CoV-2 program goes to Pucci and Rooman.
