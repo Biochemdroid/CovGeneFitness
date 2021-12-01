@@ -1,12 +1,27 @@
-# SARS_CoV_2-Fitness
+## SpikeProSARS-CoV-2. Usage
 
-Uses the SpikeProSARS-CoV-2 by Fabrizio Pucci to determine the evolutionary fitness of different SARS-CoV-2 Variants. 
-This code enables any SARS-CoV-2 nucleotide sequence to predict the inter-human transmissibility, infectivity based on the affinity of the spike protein with the ACE2 receptor, and viral evasion of the immune system. The reference COVID-19 sequence gets a fitness Θ = 1. The greater the Θ value the more infectious and transmittable the virus is predicted to be, along with a greater chance of escaping antibody neutralization. The results are not binding and are only predictions.
+SpikePro algorithm predicts the fitness of a SARS-CoV-2 strain from the sequence of its spike protein. Given the target sequence in fasta format, the algorithm aligns it to the reference SARS-CoV-2 spike protein (Uniprot P0DTC2), list all mutations with respect to the reference and compute the fitness for each mutations as well as for the overal viral strain. You can find more details on our preprint (Pucci and Rooman, [Prediction and evolution of the molecular fitness of SARS-CoV-2 variants: Introducing SpikePro](https://www.biorxiv.org/content/10.1101/2021.04.11.439322v1), submitted).   
 
-The SARS_CoV_2-Fitness suite allows a more rapid interface for truncating any genome to the spike protein region (+/- 100 flanking nucleotides), Aligning the sequence against a reference sequence, and then translating the aligned nucleotide sequence into an amino acid sequence. Moreover, it gives instructions for how to set up and run the SpikePro interface.
 
-References: 
+To compile the c++ program type this command:
 
-https://www.biorxiv.org/content/10.1101/2021.04.11.439322v1
+c++ SpikePro.cpp edlib/src/edlib.cpp CSVparser.cpp -o SpikePro -I edlib/include/ -std=c++11
 
-https://github.com/3BioCompBio/SpikeProSARS-CoV-2
+To run the code and predict the fitness of a viral strain 
+
+./SpikePro TEST.fasta go
+
+where TEST.fasta is the sequence of the considered variant of the SARS-CoV-2 spike protein in fasta format.  
+
+
+## List of files in this directory
+
+1) Structures: All PDB structures used in the main paper (two PDB models for the full spike protein, ACE2-Spike protein complex PDB code 6M0J, 31 Antibody-Spike protein complexes) and list of all RBD epitopes. 
+2) LICENSE
+3) README
+4) SpikePro.cpp: Main .cpp file
+5) Edlib, CVParser.cpp, CVParser.hpp, P0DTC2.fasta and PIO_6.csv: Dependencies
+6) TEST.fasta: Fasta file to use as example input 
+
+
+
