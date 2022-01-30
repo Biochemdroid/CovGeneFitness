@@ -110,7 +110,21 @@ while True:
             aligned.write("\n{}\n".format(record.seq))
             
             
-            
+#Find the total number of nucleotide mutations compared to original sequence:
+    compare = []
+    mag_diff = []
+
+    with open('aligned_omi.fasta', 'r') as aligned:
+        for nuc in aligned:
+            compare.append(nuc)
+
+    _compare = [compare[2][:-1], compare[6][:-1]]
+    for nuc in range(len(_compare[0])):
+        if _compare[0][nuc] != _compare[1][nuc]:
+            mag_diff.append(1)
+
+#     print(sum(mag_diff))
+        
             
 #Translates the truncated sequence            
     #------------------------
@@ -211,6 +225,12 @@ while True:
     
     ./SpikePro {file} go
     
-    {translated}""".format(translated = translated_seq[5][2:-2], file =name_of_file),size = (150,30))
+    {translated}
+    
+    \n
+    \n
+    
+   The total number of nucleotide point mutations = {diff} """.format(translated = translated_seq[5][2:-2], 
+                              file =name_of_file, diff = sum(mag_diff)),size = (150,30))
 
 window.close()
